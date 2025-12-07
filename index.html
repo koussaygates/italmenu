@@ -1,57 +1,753 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bella Vista Menu</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bella Vista Italian Kitchen | Digital Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .header { text-align: center; border-bottom: 2px solid #c41e3a; padding-bottom: 20px; }
-        h1 { color: #c41e3a; }
-        .section { margin: 30px 0; }
-        .item { display: flex; justify-content: space-between; margin: 10px 0; }
-        .price { color: #c41e3a; font-weight: bold; }
-        .description { color: #666; font-size: 14px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --primary-dark: #9a162f;
+            --gold: #d4af37;
+            --light: #fff8f0;
+            --dark: #2c1810;
+            --gray: #5d5d5d;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header & Hero */
+        .hero {
+            background: linear-gradient(rgba(44, 24, 16, 0.8), rgba(44, 24, 16, 0.9)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 0 0 40px 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 1.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--gold), var(--primary));
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            animation: slideDown 1s ease-out;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .restaurant-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-item i {
+            color: var(--gold);
+            font-size: 1.3rem;
+        }
+
+        /* Navigation */
+        .category-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .category-btn {
+            padding: 12px 25px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        /* Menu Sections */
+        .menu-section {
+            margin: 60px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            animation-delay: calc(var(--order) * 0.2s);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--gold);
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+
+        /* Menu Items */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: calc(var(--item-order) * 0.1s);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .item-image {
+            height: 200px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .menu-item:hover .item-image {
+            transform: scale(1.05);
+        }
+
+        .item-content {
+            padding: 25px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-right: 15px;
+        }
+
+        .item-price {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            min-width: 80px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        .item-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .item-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--light);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(196, 30, 58, 0.2);
+        }
+
+        .tag.vegetarian {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .tag.spicy {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* Specials Section */
+        .specials {
+            background: linear-gradient(135deg, var(--dark), #3d2a20);
+            color: white;
+            padding: 60px 20px;
+            border-radius: 40px;
+            margin: 80px 0;
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .special-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+            border-radius: 40px 40px 0 0;
+            margin-top: 80px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .qr-instruction {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 30px;
+            display: inline-block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo { font-size: 2.5rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 2rem; }
+            .category-nav { gap: 10px; }
+            .category-btn { padding: 10px 20px; }
+        }
+
+        /* Scroll Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Bella Vista Italian Kitchen</h1>
-        <p>📍 123 Main Street | 📞 (555) 123-4567</p>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <h1 class="logo">Bella <span>Vista</span></h1>
+            <p class="tagline">Authentic Italian Cuisine Since 1995</p>
+            
+            <div class="restaurant-info">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>123 Main Street, Milan District</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <span>(555) 123-4567</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Open Daily: 11AM - 10PM</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Category Navigation -->
+        <nav class="category-nav">
+            <button class="category-btn active" data-category="all">All Menu</button>
+            <button class="category-btn" data-category="appetizers">Appetizers</button>
+            <button class="category-btn" data-category="pasta">Pasta</button>
+            <button class="category-btn" data-category="pizza">Pizza</button>
+            <button class="category-btn" data-category="desserts">Desserts</button>
+            <button class="category-btn" data-category="drinks">Drinks</button>
+        </nav>
+
+        <!-- Specials Banner -->
+        <section class="specials animate-on-scroll">
+            <div class="special-badge">
+                <i class="fas fa-star"></i> TODAY'S SPECIALS
+            </div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Try Our Chef's Recommendations</h2>
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">
+                Experience the perfect blend of traditional recipes and modern culinary artistry. 
+                Our specials change daily based on fresh market ingredients.
+            </p>
+        </section>
+
+        <!-- Appetizers Section -->
+        <section class="menu-section" id="appetizers" style="--order: 1;">
+            <div class="section-header">
+                <i class="fas fa-utensils section-icon"></i>
+                <h2 class="section-title">Appetizers</h2>
+            </div>
+            
+            <div class="menu-grid">
+                <div class="menu-item" data-category="appetizers" style="--item-order: 1;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Bruschetta Classica</h3>
+                            <div class="item-price">$12.95</div>
+                        </div>
+                        <p class="item-description">
+                            Toasted bread topped with fresh tomatoes, garlic, basil, and extra virgin olive oil. 
+                            Served with aged balsamic reduction.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag vegetarian">Vegetarian</span>
+                            <span class="tag">Seasonal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="appetizers" style="--item-order: 2;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Calamari Fritti</h3>
+                            <div class="item-price">$16.95</div>
+                        </div>
+                        <p class="item-description">
+                            Crispy fried squid rings served with lemon aioli and spicy marinara sauce. 
+                            Lightly battered with Italian herbs.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag">Seafood</span>
+                            <span class="tag spicy">Spicy Option</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pasta Section -->
+        <section class="menu-section" id="pasta" style="--order: 2;">
+            <div class="section-header">
+                <i class="fas fa-pasta section-icon"></i>
+                <h2 class="section-title">Fresh Pasta</h2>
+            </div>
+            
+            <div class="menu-grid">
+                <div class="menu-item" data-category="pasta" style="--item-order: 1;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Spaghetti Carbonara</h3>
+                            <div class="item-price">$18.95</div>
+                        </div>
+                        <p class="item-description">
+                            Traditional Roman pasta with eggs, Pecorino Romano cheese, guanciale, and black pepper. 
+                            Creamy without cream.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag">Classic</span>
+                            <span class="tag">House Specialty</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="pasta" style="--item-order: 2;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1473093295043-cdd812d0e601?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Truffle Mushroom Ravioli</h3>
+                            <div class="item-price">$22.95</div>
+                        </div>
+                        <p class="item-description">
+                            Handmade ravioli filled with wild mushrooms and truffle, served in a sage butter sauce 
+                            with Parmigiano-Reggiano.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag vegetarian">Vegetarian</span>
+                            <span class="tag">Truffle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pizza Section -->
+        <section class="menu-section" id="pizza" style="--order: 3;">
+            <div class="section-header">
+                <i class="fas fa-pizza-slice section-icon"></i>
+                <h2 class="section-title">Wood-Fired Pizza</h2>
+            </div>
+            
+            <div class="menu-grid">
+                <div class="menu-item" data-category="pizza" style="--item-order: 1;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Margherita Classica</h3>
+                            <div class="item-price">$16.95</div>
+                        </div>
+                        <p class="item-description">
+                            San Marzano tomatoes, fresh buffalo mozzarella, basil, and extra virgin olive oil. 
+                            Cooked in 900°F wood-fired oven.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag vegetarian">Vegetarian</span>
+                            <span class="tag">Neapolitan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="pizza" style="--item-order: 2;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Quattro Stagioni</h3>
+                            <div class="item-price">$19.95</div>
+                        </div>
+                        <p class="item-description">
+                            Four seasons pizza: artichokes (spring), olives (summer), mushrooms (autumn), 
+                            and prosciutto (winter).
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag">Seasonal</span>
+                            <span class="tag">Traditional</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Desserts Section -->
+        <section class="menu-section" id="desserts" style="--order: 4;">
+            <div class="section-header">
+                <i class="fas fa-ice-cream section-icon"></i>
+                <h2 class="section-title">Sweet Endings</h2>
+            </div>
+            
+            <div class="menu-grid">
+                <div class="menu-item" data-category="desserts" style="--item-order: 1;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Tiramisu Classico</h3>
+                            <div class="item-price">$9.95</div>
+                        </div>
+                        <p class="item-description">
+                            Layers of coffee-soaked ladyfingers and mascarpone cream, dusted with cocoa powder. 
+                            Made daily in-house.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag">Signature</span>
+                            <span class="tag vegetarian">Vegetarian</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="desserts" style="--item-order: 2;">
+                    <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="item-name">Panna Cotta</h3>
+                            <div class="item-price">$8.95</div>
+                        </div>
+                        <p class="item-description">
+                            Vanilla bean cream custard with fresh berry compote and mint. 
+                            Silky smooth texture with a hint of vanilla.
+                        </p>
+                        <div class="item-tags">
+                            <span class="tag vegetarian">Vegetarian</span>
+                            <span class="tag">Gluten Free</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
-    <div class="section">
-        <h2>🍝 Pasta</h2>
-        <div class="item">
-            <div>
-                <strong>Spaghetti Carbonara</strong>
-                <div class="description">Classic Roman pasta with eggs, pecorino, guanciale, black pepper</div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 20px;">
+                Grazie for Visiting!
+            </h2>
+            
+            <p style="max-width: 600px; margin: 0 auto 30px; font-size: 1.1rem;">
+                We source our ingredients locally and prepare each dish with passion. 
+                Visit us soon for an authentic Italian dining experience.
+            </p>
+            
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                <a href="#"><i class="fab fa-google"></i></a>
             </div>
-            <div class="price">$18.95</div>
-        </div>
-        <div class="item">
-            <div>
-                <strong>Fettuccine Alfredo</strong>
-                <div class="description">Fresh fettuccine with parmesan cream sauce</div>
+            
+            <div class="qr-instruction animate-on-scroll">
+                <i class="fas fa-qrcode" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                <h3>Digital Menu</h3>
+                <p>Scan QR code to save this menu to your phone</p>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                    Menu updated daily • Prices subject to change
+                </p>
             </div>
-            <div class="price">$16.95</div>
+            
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p>© 2024 Bella Vista Italian Kitchen. All rights reserved.</p>
+                <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">
+                    Designed with ❤️ for food lovers everywhere
+                </p>
+            </div>
         </div>
-    </div>
+    </footer>
 
-    <div class="section">
-        <h2>🍕 Pizza</h2>
-        <div class="item">
-            <div>
-                <strong>Margherita</strong>
-                <div class="description">San Marzano tomatoes, fresh mozzarella, basil</div>
-            </div>
-            <div class="price">$14.95</div>
-        </div>
-        <div class="item">
-            <div>
-                <strong>Quattro Formaggi</strong>
-                <div class="description">Four cheese blend: mozzarella, gorgonzola, parmesan, fontina</div>
-            </div>
-            <div class="price">$17.95</div>
-        </div>
-    </div>
+    <script>
+        // Category Filtering
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                const allItems = document.querySelectorAll('.menu-item');
+                
+                // Filter items
+                allItems.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateY(0)';
+                        }, 100);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
+                // Scroll to first matching section
+                if (category !== 'all') {
+                    const section = document.getElementById(category);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // Scroll Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animate-on-scroll elements
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add hover effect to menu items
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add loading animation
+        window.addEventListener('load', function() {
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                document.body.style.overflow = 'auto';
+                
+                // Animate each menu section sequentially
+                document.querySelectorAll('.menu-section').forEach((section, index) => {
+                    setTimeout(() => {
+                        section.style.opacity = '1';
+                        section.style.transform = 'translateY(0)';
+                    }, index * 300);
+                });
+            }, 1000);
+        });
+
+        // Price animation on hover
+        document.querySelectorAll('.item-price').forEach(price => {
+            price.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1) rotate(5deg)';
+            });
+            
+            price.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0)';
+            });
+        });
+    </script>
 </body>
 </html>
